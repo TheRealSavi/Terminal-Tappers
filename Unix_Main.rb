@@ -26,28 +26,30 @@ def startGame()
 end
 
 def menu
-  puts "#{$gameState.player.name} - Level: #{$gameState.player.level} - Stage: #{$gameState.stage}"      
-  if $gameState.displayStats == 1
+  player = $gameState[:player]
+  puts "#{player.name} - Level: #{player.level} - Stage: #{$gameState[:stage]}"      
+  if $gameState[:displayStats] == 1
     stats()
   end
-  if $gameState.displayControls == 1
-  puts
-  puts "Push the space bar to attack"
-  puts
-  puts "Push 'x' to close"
-  puts
-  puts "Push 's' to enter the store"
-  puts
-  puts "Push 'd' to toggle stats"
-  puts "Push 'c' to toggle controls"
+  if $gameState[:displayControls] == 1
+    puts
+    puts "Push the space bar to attack"
+    puts
+    puts "Push 'x' to close"
+    puts
+    puts "Push 's' to enter the store"
+    puts
+    puts "Push 'd' to toggle stats"
+    puts "Push 'c' to toggle controls"
   end
 end
 
 def stats()
-  puts "Xp: #{$gameState.player.xp} / #{$gameState.player.nextLevelXp}"
-  puts "Attack Power: #{$gameState.player.attackPower}"
-  puts "Enemies Felled: #{$gameState.monstersDefeated}"
-  puts "Skill Points: #{$gameState.player.skillPoints}"
+  player = $gameState[:player]
+  puts "Xp: #{player.xp} / #{player.nextLevelXp}"
+  puts "Attack Power: #{player.attackPower}"
+  puts "Enemies Felled: #{$gameState[:monstersDefeated]}"
+  puts "Skill Points: #{player.skillPoints}"
 end
 
 def game()
@@ -58,15 +60,14 @@ def game()
     menu()
     puts
     
-    if $gameState.enemies.length < $gameState.enemySlots
-      openSlots = $gameState.enemySlots - $gameState.enemies.length
+    if $gameState[:enemies].length < $gameState[:enemySlots]
+      openSlots = $gameState[:enemySlots] - $gameState[:enemies].length
       openSlots.times do 
-        $gameState.enemies.push(Enemy.new())
+        $gameState[:enemies].push(Enemy.new())
       end
     end
-
     
-    $gameState.enemies.each do |enemy|
+    $gameState[:enemies].each do |enemy|
       enemy.display()
       enemy.checkDeath()
     end
@@ -74,23 +75,24 @@ def game()
     char = readRaw()
 
     if char == " "
-      $gameState.enemies.each do |enemy|
-        enemy.reduceHp($player.attackPower)
+      $gameState[:enemies].each do |enemy|
+        enemy.reduceHp($gameState[:player].attackPower)
       end
     end
-
+    
     if char == "d"
-      if $displayStats == 0
-        $displayStats = 1 
+      if $gameState[:displayStats] == 0
+        $gameState[:displayStats] = 1 
       else
-        $displayStats = 0
+        $gameState[:displayStats] = 0
       end
     end
+    
     if char == "c"
-      if $displayControls == 0
-        $displayControls = 1 
+      if $gameState[:displayControls] == 0
+        $gameState[:displayControls] = 1 
       else
-        $displayControls = 0
+        $gameState[:displayControls] = 0
       end
     end
 
@@ -101,8 +103,8 @@ def game()
     if char == "x"
       system "clear"
       puts "-- GAME OVER --"
-      $displayStats = 1
-      $displayControls = 0
+      $gameState[:displayStats] = 1
+      $gameState[:displayControls] = 0
       menu()
       puts
       abort("Hope you had fun!")
