@@ -1,30 +1,35 @@
 require_relative "Enemies.rb"
 require_relative "Player.rb"
 
-def startGame
+def logo
+  puts <<~LOGO
+     ________________  __  ________   _____    __       _________    ____  ____  __________ _____
+    /_  __/ ____/ __ \\/  |/  /  _/ | / /   |  / /      /_  __/   |  / __ \\/ __ \\/ ____/ __ / ___/
+     / / / __/ / /_/ / /|_/ // //  |/ / /| | / /        / / / /| | / /_/ / /_/ / __/ / /_/ \\__ \\
+    / / / /___/ _, _/ /  / _/ // /|  / ___ |/ /___     / / / ___ |/ ____/ ____/ /___/ _, ____/ /
+   /_/ /_____/_/ |_/_/  /_/___/_/ |_/_/  |_/_____/    /_/ /_/  |_/_/   /_/   /_____/_/ |_/____/
+  LOGO
+end
+
+$gameState = {stage: 1, monstersDefeated: 0, displayStats: 1, displayControls, 1, player: nil, enemySlots: 1, enemies: []}
+
+def startGame()
   system "clear"
-  $stage = 1
-  $monstersDefeated = 0
-  $displayStats = 1
-  $displayControls = 1
-  
 
   puts "To start your adventure, please enter your name."
   print "Champion: "
   name = gets().chomp
-
-  $player = Player.new(name)
+  $gameState.player = Player.new(name)
   
   game()
-
 end
 
 def menu
-  puts "#{$player.name} - Level: #{$player.level} - Stage: #{$stage}"      
-  if $displayStats == 1
+  puts "#{$gameState.player.name} - Level: #{$gameState.player.level} - Stage: #{$gameState.stage}"      
+  if $gameState.displayStats == 1
     stats()
   end
-  if $displayControls == 1
+  if $gameState.displayControls == 1
   puts
   puts "Push the space bar to attack"
   puts
@@ -37,47 +42,42 @@ def menu
   end
 end
 
-def game()
-  enemy = Enemy.new($stage)
-  i = 0
+def stats()
+  puts "Xp: #{$gameState.player.xp} / #{$gameState.player.nextLevelXp}"
+  puts "Attack Power: #{$gameState.player.attackPower}"
+  puts "Enemies Felled: #{$gameState.monstersDefeated}"
+  puts "Skill Points: #{$gameState.player.skillPoints}"
+end
 
+def game()
+
+  i = 0
   loop do
     system "clear"
     menu()
-    i = i + 1
     puts
     
-    if i == 1
-      puts "A wild Lv.#{enemy.level} #{enemy.name} has appeared!"
-    elsif enemy.health > 0
-    puts "Fighting Lv.#{enemy.level} #{enemy.name}"
+    if $gameState.enemies.length < $gameState.enemySlots
+      openSlots = $gameState.enemySlots - $gameState.enemies.length
+      openSlots.times do 
+        $gameState.enemies.push(Enemy.new())
+      end
     end
 
-    if enemy.health <= 0
-      $monstersDefeated += 1
-      puts "#{enemy.name} has been defeated!"
-      xp = (enemy.maxHealth * 0.5) + (rand(5..10) * $stage)
-      puts "You got #{xp} xp!"
-      $player.addXp(xp)
-      if enemy.type == "boss"
-        $player.rewardSp(0.10)
-      end
-      
-      if $monstersDefeated % 20 == 0
-        $stage += 1
-        $player.rewardSp(0.80)
-      end
-      readRaw()
-      break
-    end
-    enemy.display()
     
+    $gameState.enemies.each do |enemy|
+      enemy.display()
+      enemy.checkDeath()
+    end
+
     char = readRaw()
-    
+
     if char == " "
-      enemy.reduceHp($player.attackPower)
+      $gameState.enemies.each do |enemy|
+        enemy.reduceHp($player.attackPower)
+      end
     end
-    
+
     if char == "d"
       if $displayStats == 0
         $displayStats = 1 
@@ -85,7 +85,6 @@ def game()
         $displayStats = 0
       end
     end
-    
     if char == "c"
       if $displayControls == 0
         $displayControls = 1 
@@ -93,7 +92,11 @@ def game()
         $displayControls = 0
       end
     end
-    
+
+    if char == "s"
+      shop()
+    end
+
     if char == "x"
       system "clear"
       puts "-- GAME OVER --"
@@ -103,12 +106,8 @@ def game()
       puts
       abort("Hope you had fun!")
     end
-    
-    if char == "s"
-      shop()
-    end
+
   end
-game()
 end
 
 def readRaw()
@@ -125,14 +124,6 @@ def readRaw()
   return char
 end
 
-def stats()
-  puts "Xp: #{$player.xp} / #{$player.nextLevelXp}"
-  puts "Attack Power: #{$player.attackPower}"
-  puts "Enemies Felled: #{$monstersDefeated}"
-  puts "Skill Points: #{$player.skillPoints}"
-end
-
-
 def shop()
   system "clear"
 
@@ -140,7 +131,7 @@ def shop()
   puts
   puts "Push 'e' to exit"
   puts
-  puts "YOU HAVE #{$player.skillPoints} SKILL POINTS"
+  puts "YOU HAVE #{$gameState.player.skillPoints} SKILL POINTS"
   puts
   
   puts "1: +1 Attack Damage - 1 skill point"
