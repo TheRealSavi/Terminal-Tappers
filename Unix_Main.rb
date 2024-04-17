@@ -20,7 +20,7 @@ def startGame()
   puts "To start your adventure, please enter your name."
   print "Champion: "
   name = gets().chomp
-  $gameState.player = Player.new(name)
+  $gameState[:player] = Player.new(name)
   
   game()
 end
