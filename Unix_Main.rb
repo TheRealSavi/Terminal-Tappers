@@ -134,13 +134,13 @@ def shop()
   puts
   puts "Push 'e' to exit"
   puts
-  puts "YOU HAVE #{$gameState.player.skillPoints} SKILL POINTS"
+  puts "YOU HAVE #{$gameState[:player].skillPoints} SKILL POINTS"
   puts
   
   puts "1: +1 Attack Damage - 1 skill point"
   puts "2: +2 Attack Damage - 2 skill points"
   
-  if $player.skillPoints < 1
+  if $gameState[:player].skillPoints < 1
     return
   end
   
@@ -148,20 +148,20 @@ def shop()
   choice = readRaw()
   
   if choice == "1"
-    if $player.skillPoints < 1
-      print "You cant afford that silly \n"
+    if $gameState[:player].skillPoints < 1
+      print "You can't afford that, silly! \n"
       readRaw()
     else
-      $player.attackUp(1)
-      $player.shopBuy(1)
+      $gameState[:player].attackUp(1)
+      $gameState[:player].shopBuy(1)
     end
   elsif choice == "2"
-    if $player.skillPoints < 2
-      print "You cant afford that silly \n"
+    if $gameState[:player].skillPoints < 2
+      print "You can't afford that, silly! \n"
       readRaw()
     else
-      $player.attackUp(2)
-      $player.shopBuy(2)
+      $gameState[:player].attackUp(2)
+      $gameState[:player].shopBuy(2)
     end
   elsif choice.upcase == "E"
     return

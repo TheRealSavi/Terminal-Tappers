@@ -1,6 +1,6 @@
 class Enemy attr_reader :health, :name, :level, :type, :maxHealth
   def initialize()
-    @level = $gameState.stage
+    @level = $gameState[:stage]
     @name = newName()
     @health = calcHealth()
     @maxHealth = @health
@@ -68,14 +68,14 @@ class Enemy attr_reader :health, :name, :level, :type, :maxHealth
 
   def checkDeath()
     if @health <= 0
-      $gameState.monstersDefeated += 1
+      $gameState[:monstersDefeated] += 1
       puts "#{@name} has been defeated!"
-      xp = (@maxHealth * 0.5) + (rand(5..10) * $gameState.stage)
+      xp = (@maxHealth * 0.5) + (rand(5..10) * $gameState[:stage])
       xp = xp.round
       puts "You got #{xp} xp!"
-      $gameState.player.addXp(xp)
+      $gameState[:player].addXp(xp)
       if @type == "boss"
-        $gameState.player.rewardSp(0.10)
+        $gameState[:player].rewardSp(0.10)
       end
       return 1
     end
