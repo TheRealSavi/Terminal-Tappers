@@ -11,7 +11,7 @@ def logo
   LOGO
 end
 
-$gameState = {stage: 1, monstersDefeated: 0, displayStats: 1, displayControls: 1, player: nil, enemySlots: 1, enemies: []}
+$gameState = {stage: 1, monstersDefeated: 0, displayStats: 1, displayControls: 1, player: nil, enemySlots: 3, enemies: []}
 
 
 def startGame()
