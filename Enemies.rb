@@ -50,9 +50,11 @@ class Enemy attr_reader :health, :name, :level, :type, :maxHealth
   
   def genBar()
     width = (@type == "boss") ? 35 : 18
-    filledPercent = @health.to_f / @maxHealth.to_f
+    filledPercent = [@health.to_f / @maxHealth.to_f, 0.0].max  # Ensure filledPercent is at least 0
+    filledPercent = [filledPercent, 1.0].min  # Ensure filledPercent is at most 1
     filledPixels = (filledPercent * width.to_f).to_i
     remainingPixels = width - filledPixels
+    
     puts "[#{'#' * filledPixels}#{'*' * remainingPixels}]"
   end
 
