@@ -1,32 +1,38 @@
 class Player
-  attr_reader :attackPower, :xp, :xpHave, :skillPoints
+  attr_reader :attackPower, :xp, :nextLevelXp, :skillPoints, :name, :level
   def initialize(name)
     @name = name
-    @xp = 1
-    @xpHave = 0
+    @nextLevelXp = 1
+    @xp = 0
     @level = 1
     @attackPower = 1
     @skillPoints = 0
   end
 
-  def Level(gained)
-    @xpHave += gained
-    if @xpHave >= @xp
+  def addXp(gained)
+    @xp += gained
+    if @xp >= @nextLevelXp
       @level += 1
       @skillPoints +=1
       puts
-      puts "You leveled up!"
+      puts "Level Up! Level: #{@level}"
       puts
-      @xp *= rand(1..5)
+      @nextLevelXp *= rand(2..5)
     end
   end
+  
+  def rewardSp(reward)
+    @skillPoints += reward
+    @skillPoints = @skillPoints.round(2)
+  end
 
-  def AttackUp(amount)
+  def attackUp(amount)
     @attackPower += amount
   end
 
-  def ShopBuy(amount)
+  def shopBuy(amount)
     @skillPoints -= amount
+    @skillPoints = @skillPoints.round(2)
   end
 
 end
