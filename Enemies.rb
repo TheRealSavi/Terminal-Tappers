@@ -59,7 +59,9 @@ class Enemy attr_reader :health, :name, :level, :type, :maxHealth
   end
 
   def display()
-    if checkDeath() == 1 return
+    if checkDeath() == 1
+      return
+    end
     if @health == @maxHealth
       puts "A wild Lv.#{@level} #{@name} has appeared!"
     else
