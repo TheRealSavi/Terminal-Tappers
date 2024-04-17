@@ -69,7 +69,7 @@ def game()
       end
     end
     
-    $gameState[:enemies].each do |enemy|
+    $gameState[:enemies].reverse_each do |enemy|
       enemy.display()
       puts
     end
