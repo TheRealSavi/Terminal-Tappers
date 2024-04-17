@@ -17,6 +17,8 @@ $gameState = {stage: 1, monstersDefeated: 0, displayStats: 1, displayControls: 1
 def startGame()
   system "clear"
 
+  logo()
+
   puts "To start your adventure, please enter your name."
   print "Champion: "
   name = gets().chomp
@@ -69,7 +71,7 @@ def game()
     
     $gameState[:enemies].each do |enemy|
       enemy.display()
-      enemy.checkDeath()
+      puts
     end
 
     char = readRaw()
