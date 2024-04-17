@@ -79,6 +79,7 @@ class Enemy attr_reader :health, :name, :level, :type, :maxHealth
       if @type == "boss"
         $gameState[:player].rewardSp(0.10)
       end
+      $gameState[:enemies].delete(self)
       return 1
     end
     return 0
